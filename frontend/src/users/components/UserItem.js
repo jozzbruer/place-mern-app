@@ -1,7 +1,9 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+
 import Avatar from '../../shared/components/UIelements/Avatar'
 import Card from '../../shared/components/UIelements/Card'
+
 import './UserItem.css'
 
 function UserItem(props) {
