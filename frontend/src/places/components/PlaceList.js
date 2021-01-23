@@ -9,7 +9,7 @@ function PlaceList(props) {
         <>
         {props.items.length === 0 ? (
             <div className='place-list center'>
-                <Card>
+                <Card >
                     No places found. Maybe create one?
                     <button>Share Place</button>
                 </Card>
