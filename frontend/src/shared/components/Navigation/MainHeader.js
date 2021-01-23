@@ -4,7 +4,7 @@ import './MainHeader.css'
 
 function MainHeader(props) {
     return (
-        <header className='main-header'>
+        <header className='main-header' onClick={props.onClick}>
             {props.children}
         </header>
     )
