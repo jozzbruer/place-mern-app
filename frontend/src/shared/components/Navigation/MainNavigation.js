@@ -21,11 +21,11 @@ function MainNavigation(props) {
     return (
         <>
            { isDrawerOpen && (<Backdrop  onClick={closeDrawer} />)}
-           {isDrawerOpen ? (<SideDrawer  onClick={closeDrawer}>
+           <SideDrawer show={isDrawerOpen}  onClick={closeDrawer}>
             <nav className='main-navigation__drawer-nav'>
                 <NavLinks />
             </nav>
-            </SideDrawer>) : null}
+            </SideDrawer>
             <MainHeader>
                 <button onClick={drawerHandler} className='main-navigation__menu-btn'>
                     <span />

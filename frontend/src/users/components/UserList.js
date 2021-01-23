@@ -7,7 +7,7 @@ function UserList(props) {
     return (
         <>
         {props.items.length === 0 ? (
-            <div className='center'>
+            <div className='users-list center'>
                 <Card>
                     No user found
                 </Card>
