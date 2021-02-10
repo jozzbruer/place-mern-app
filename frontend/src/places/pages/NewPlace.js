@@ -1,10 +1,12 @@
 import React from 'react'
+import Input from '../components/Input'
+import './NewPlace.css'
 
-function NewPlace() {
+function NewPlace(props) {
     return (
-        <div>
-            <h2>New Places</h2>
-        </div>
+        <form className="place-form">
+            <Input element='input' type='text' label='Title' validators={[ ]}  onChange={props.onChange} errorText='Please add a valid title'/>
+        </form>
     )
 }
 
