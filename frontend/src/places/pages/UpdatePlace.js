@@ -31,25 +31,38 @@ function UpdatePlace() {
     ]
     const placeId = useParams().placeId
     const identifiedPlace = DUMMY_PLACES.find(place =>{return place.id === placeId})
+    let t 
+    let d 
 
-    const [formData, setFormData] = useState('')
+    if(!identifiedPlace){
+        t = ''
+        d =''
+    }else{
+        t = identifiedPlace.title
+        d = identifiedPlace.description
+    }
+    const [title , setTitle] = useState(t)
+    const [desc , setDesc] = useState(d)
+    
+    const [formData, setFormData] = useState({})
     
     function changeHandler(event){       
-        setFormData({...formData,
-            [event.target.name]: event.target.value})
-       
-        //result = validate(enteredValue, props.validators)
+       setTitle(event.target.value)
     }
+    function changeHandler1(event){       
+        setDesc(event.target.value)
+     }
     
+
     function sendData(event){
         event.preventDefault()
-        console.log(formData)
-        setFormData('')
-       
+        setFormData({title: title,description: desc}) 
     }
+
+    
     return (
        <>
-            {!identifiedPlace ? (
+            {title === '' || desc === '' ? (
                 <div className="center">
                     <h2>Could not find the place</h2>
                 </div>
@@ -57,11 +70,11 @@ function UpdatePlace() {
                 <form className="place-form" onSubmit={sendData}>
             <div className={`form-control `} >
                 <label  htmlFor=''>Title</label>
-                <input type="text" name="title" id="title" value={identifiedPlace.title} placeholder='Enter the title please' onChange={changeHandler} />
+                <input type="text" name="title" id="title" value={title} placeholder='Enter the title please' onChange={changeHandler} />
             </div>
             <div className={`form-control `} >
                 <label  htmlFor=''>Description</label>
-                <textarea type="text" cols={3} name="description" id="description" value={identifiedPlace.description} placeholder='Enter the description please' onChange={changeHandler}/>
+                <textarea type="text" cols={3} name="description" id="description" value={desc} placeholder='Enter the description please' onChange={changeHandler1}/>
             </div>
             <Button type='submit'>UPDATE PLACE</Button>
             </form>
