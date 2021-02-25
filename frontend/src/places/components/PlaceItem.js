@@ -9,6 +9,19 @@ function PlaceItem(props) {
 
     const [showMap, setShowMap] = useState(false)
 
+    const [showConfirmation, setShowConfirmation] = useState(false)
+
+    function showConfirmHandler(){
+        setShowConfirmation(true)
+    }
+    function confirmHandler(){
+        setShowConfirmation(false)
+        console.log('Delete it...lol')
+    }
+    function cancelConfirmationHandler(){
+        setShowConfirmation(false)
+    }
+
     function openMapHandler(){
         setShowMap(true)
     }
@@ -29,6 +42,19 @@ function PlaceItem(props) {
                <Map center={props.coordinates} zoom={16} />
             </div>
         </Modal>
+        <Modal 
+        header="Are you sure" 
+        footerClass='place-item__modal-actions' 
+        show={showConfirmation}
+        onCancel={cancelConfirmationHandler}
+        footer={
+            <>
+                <Button inverse onClick={cancelConfirmationHandler}>CANCEL</Button>
+                <Button danger onClick={confirmHandler}>DELETE</Button>
+            </>
+        }>
+            <p>Do you want to delete it?</p>
+        </Modal>
         <li className='place-item'>
            <Card className='place-item__content'>
             <div className="place-item__image">
@@ -42,7 +68,7 @@ function PlaceItem(props) {
                 <div className="place-item__actions">
                     <Button inverse onClick={openMapHandler}>VIEW ON A MAP</Button>
                     <Button to={`places/${props.id}`}>EDIT</Button>
-                    <Button danger>DELETE</Button>
+                    <Button danger onClick={showConfirmHandler}>DELETE</Button>
                 </div>
            </Card>
         </li>
