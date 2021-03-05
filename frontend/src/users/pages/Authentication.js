@@ -1,9 +1,12 @@
-import React, {useState} from 'react'
+import React, { useState, useContext } from 'react'
 import Button from '../../shared/components/FormElements/Button'
 import Card from '../../shared/components/UIelements/Card'
+import { AuthContext } from '../../shared/context/auth-context'
 import './Authentication.css'
 
 function Authentication() {
+    const auth = useContext(AuthContext)
+
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [username, setUsername] = useState('')
@@ -29,8 +32,10 @@ function Authentication() {
     
     function sendData(e){
         e.preventDefault()
-        if(isLoginMode)
+        if(isLoginMode){
             console.log(data)
+            auth.login()
+        }
         else
             console.log(dataSave)
     }
