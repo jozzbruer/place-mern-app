@@ -58,3 +58,28 @@ exports.createPlace = (request, response, next) =>{
     DUMMY_PLACES.push(createPlace)
     response.status(201).json({places: createPlace})
 }
+
+exports.updatePlace = (request, response, next) => {
+    const { title, description } = request.body // const title = request.body.title
+    const placeId = request.params.pid
+    const updatePlace = {...DUMMY_PLACES.find(p => {
+        return p.id === placeId 
+    })} // Create a copy of the place that i have already
+
+    //get the index of the place i want to update
+    const placeIndex = DUMMY_PLACES.findIndex(p => {
+        return p.id === placeId
+    })
+
+    // Update the field from the body
+    updatePlace.title = title
+    updatePlace.description = description
+
+    DUMMY_PLACES[placeIndex] = updatePlace
+    response.status(200)
+    response.json({place: updatePlace})
+} 
+
+exports.deletePlace = (request, response, next) => {
+
+}
