@@ -12,6 +12,18 @@ let DUMMY_PLACES =[
             lng: -73.9878583
         },
         creator: 'u2'
+    },
+    {
+        id: 'p2',
+        title: 'Empire Wall stree',
+        description: 'The famous place',
+        imageUrl: 'https://images.unsplash.com/photo-1583842761844-be1a7bc7fc23?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
+        adress: '20 W 34th St, New york, NY 10001',
+        locations:{
+            lat: 40.7484405,
+            lng: -73.9878583
+        },
+        creator: 'u2'
     }
 ]
 
@@ -29,19 +41,19 @@ exports.getPlaceById = (request, response, next) =>{
     response.json({places})
 }
 
-exports.getPlaceByUserId = (request, response, next) => {
+exports.getPlacesByUserId = (request, response, next) => {
     const userId = request.params.uid
-    const user = DUMMY_PLACES.find(user => 
+    const places = DUMMY_PLACES.filter(user => 
          user.creator === userId
        )
 
-    if (!user){
+    if (!places || places.length === 0){
         const error = new HttpError('Could not find a place for this user id', 404)
         return next(error)
     }
         
 
-    response.json({user}) // => {user: user} if both have same name, you can just put one
+    response.json({places}) // => {user: user} if both have same name, you can just put one
 }
 
 exports.createPlace = (request, response, next) =>{
