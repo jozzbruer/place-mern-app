@@ -1,5 +1,7 @@
 const { v4 : uuidv4 } = require('uuid');
 const HttpError = require('../models/http-error')
+const validator = require('express-validator')
+
 let DUMMY_PLACES =[
     {
         id: 'p1',
@@ -26,7 +28,10 @@ let DUMMY_PLACES =[
         creator: 'u2'
     }
 ]
-
+exports.getAllPlaces = (request, response, next) => {
+    response.status(200)
+    response.json({places: DUMMY_PLACES})
+}
 exports.getPlaceById = (request, response, next) =>{
     const placeId = request.params.pid;
     const places = DUMMY_PLACES.find(place => 
@@ -57,6 +62,12 @@ exports.getPlacesByUserId = (request, response, next) => {
 }
 
 exports.createPlace = (request, response, next) =>{
+    const errors = validator.validationResult(request)
+
+    if (!errors.isEmpty()){
+        const error = new HttpError('Invalid input passes, please check your data', 422)
+        return next(error)
+    }
     const { title, description, coordinates, adress, creator} = request.body // const title = request.body.title
     const createPlace = {
         id: uuidv4(),
@@ -73,6 +84,12 @@ exports.createPlace = (request, response, next) =>{
 
 exports.updatePlace = (request, response, next) => {
     const { title, description } = request.body // const title = request.body.title
+    const errors = validator.validationResult(request)
+
+    if (!errors.isEmpty()){
+        const error = new HttpError('Invalid input passes, please check your data', 422)
+        return next(error)
+    }
     const placeId = request.params.pid
     const updatePlace = {...DUMMY_PLACES.find(p => {
         return p.id === placeId 
