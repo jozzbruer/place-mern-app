@@ -9,7 +9,7 @@ const HttpError = require('./models/http-error')
 
 mongoose
 	.connect(
-		'mongodb+srv://joz:@mern.aoodt.mongodb.net/MernData?retryWrites=true&w=majority',
+		'mongodb+srv://joz:bouzen3@mern.aoodt.mongodb.net/MernData?retryWrites=true&w=majority',
 		{
 			useNewUrlParser: true,
 			useUnifiedTopology: true,
