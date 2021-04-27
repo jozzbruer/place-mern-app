@@ -11,16 +11,24 @@ router.get('/:pid', placesCtrl.getPlaceById)
 
 router.get('/users/:uid', placesCtrl.getPlacesByUserId)
 
-router.post('/', [
-    validator.check('title').not().isEmpty(),
-    validator.check('description').isLength({min: 5}),
-    validator.check('adress').notEmpty()
-], placesCtrl.createPlace)
+router.post(
+	'/',
+	[
+		validator.check('title').not().isEmpty(),
+		validator.check('description').isLength({ min: 5 }),
+		validator.check('adress').notEmpty(),
+	],
+	placesCtrl.createPlace
+)
 
-router.patch('/:pid',[
-    validator.check('title').not().isEmpty(),
-    validator.check('description').isLength({min: 5})
-], placesCtrl.updatePlace)
+router.patch(
+	'/:pid',
+	[
+		validator.check('title').not().isEmpty(),
+		validator.check('description').isLength({ min: 5 }),
+	],
+	placesCtrl.updatePlace
+)
 
 router.delete('/:pid', placesCtrl.deletePlace)
 

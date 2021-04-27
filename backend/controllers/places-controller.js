@@ -4,7 +4,6 @@ const validator = require('express-validator')
 
 const getCoordsForAddress = require('../util/location')
 const Place = require('../models/Place')
-const { findOne, updateOne } = require('../models/Place')
 
 let DUMMY_PLACES = [
 	{
@@ -35,8 +34,12 @@ let DUMMY_PLACES = [
 	},
 ]
 exports.getAllPlaces = (request, response, next) => {
-	response.status(200)
-	response.json({ places: DUMMY_PLACES })
+	Place.find()
+		.then((places) => response.status(200).json({ places }))
+		.catch((error) => {
+			error = new HttpError('The database is empty', 404)
+			return next(error)
+		})
 }
 exports.getPlaceById = (request, response, next) => {
 	const placeId = request.params.pid
@@ -123,10 +126,19 @@ exports.updatePlace = (request, response, next) => {
 
 exports.deletePlace = (request, response, next) => {
 	const placeId = request.params.pid
-	Place.deleteOne({ _id: placeId })
-		.then(() => response.status(200).json({ Message: 'Succesfully deleted' }))
+	Place.findOne({ _id: placeId })
+		.then(() => {
+			Place.deleteOne({ _id: placeId })
+				.then(() =>
+					response.status(200).json({ Message: 'Succesfully deleted' })
+				)
+				.catch((error) => {
+					error = new HttpError('Cant find this id', 400)
+					return next(error)
+				})
+		})
 		.catch((error) => {
-			error = new HttpError('Cant find this id', 400)
+			error = new HttpError("This Id does'nt exist")
 			return next(error)
 		})
 }
