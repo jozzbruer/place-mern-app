@@ -4,6 +4,7 @@ const validator = require('express-validator')
 
 const getCoordsForAddress = require('../util/location')
 const Place = require('../models/Place')
+const User = require('../models/User')
 
 exports.getAllPlaces = (request, response, next) => {
 	Place.find()
@@ -49,6 +50,7 @@ exports.createPlace = (request, response, next) => {
 	} catch (error) {
 		return next(error)
 	}
+
 	const createPlace = new Place({
 		title,
 		description,
@@ -58,12 +60,20 @@ exports.createPlace = (request, response, next) => {
 			'https://images.unsplash.com/photo-1583842761844-be1a7bc7fc23?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
 		creator,
 	})
-
-	createPlace
-		.save()
-		.then(() => response.status(201).json({ places: createPlace }))
+	User.findOne({ _id: creator })
+		.then((user) => {
+			createPlace
+				.save()
+				.then(() => response.status(201).json({ places: createPlace }))
+				.catch((error) => {
+					error = new HttpError('Creating Place failed, Please Try again', 400)
+					return next(error)
+				})
+			user.places.push(createPlace)
+			createPlace.save()
+		})
 		.catch((error) => {
-			error = new HttpError('Creating Place failed, Please Try again', 400)
+			error = new HttpError('This user is not exist in the database', 500)
 			return next(error)
 		})
 }

@@ -5,7 +5,7 @@ const validator = require('express-validator')
 const User = require('../models/User')
 
 exports.getAllUsers = (request, response, next) => {
-	User.find()
+	User.find({}, '-password')
 		.then((users) => response.status(200).json({ users }))
 		.catch((error) => {
 			error = new HttpError("There's no users in this place", 404)
@@ -22,7 +22,7 @@ exports.signUp = (request, response, next) => {
 		)
 		return next(error)
 	}
-	const { name, email, password, places } = request.body
+	const { name, email, password } = request.body
 
 	User.findOne({ email: email })
 		.then((user) => {
@@ -42,7 +42,6 @@ exports.signUp = (request, response, next) => {
 		password,
 		image:
 			'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=800&q=80',
-		places,
 	})
 	createUser
 		.save()
