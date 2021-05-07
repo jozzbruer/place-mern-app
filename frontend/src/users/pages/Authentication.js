@@ -45,6 +45,8 @@ function Authentication() {
 	function sendData(e) {
 		e.preventDefault()
 		if (isLoginMode) {
+			setIsLoading(true)
+			axios.post('http://localhost:5000/api/users/login')
 			console.log(JSON.stringify(data))
 			auth.login()
 		} else {
@@ -100,6 +102,7 @@ function Authentication() {
 							type='email'
 							name='email'
 							id='email'
+							z
 							value={email}
 							placeholder='Enter an email please'
 							onChange={changeEmailHandler}
