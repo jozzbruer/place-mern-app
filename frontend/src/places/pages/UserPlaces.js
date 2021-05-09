@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import PlaceList from '../components/PlaceList'
+import LoadingSpinner from '../../shared/components/UIelements/LoadingSpinner'
 import axios from 'axios'
 
 function UserPlaces() {
@@ -14,6 +15,7 @@ function UserPlaces() {
 			.then((response) => {
 				console.log(response.data.places)
 				setPlaces(response.data.places)
+				setIsLoading(false)
 			})
 			.catch((error) => {
 				console.log(error)
@@ -23,7 +25,12 @@ function UserPlaces() {
 	// const loadedPlaces = DUMMY_PLACES.filter((place) => {
 	// 	return place.creator === userId
 	// })
-	return <PlaceList items={places} />
+	return (
+		<>
+			{isLoading && <LoadingSpinner asOverlay />}
+			<PlaceList items={places} />
+		</>
+	)
 }
 
 export default UserPlaces
