@@ -12,7 +12,6 @@ function Users() {
 		axios
 			.get('http://localhost:5000/api/users/')
 			.then((response) => {
-				console.log(response.data.users)
 				setUsers(response.data.users)
 				setIsLoading(false)
 			})
