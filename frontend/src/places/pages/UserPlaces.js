@@ -21,14 +21,10 @@ function UserPlaces() {
 				console.log(error)
 			})
 	}, [])
-
-	// const loadedPlaces = DUMMY_PLACES.filter((place) => {
-	// 	return place.creator === userId
-	// })
 	return (
 		<>
 			{isLoading && <LoadingSpinner asOverlay />}
-			<PlaceList items={places} />
+			{!isLoading && <PlaceList items={places} />}
 		</>
 	)
 }
