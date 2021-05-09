@@ -15,7 +15,6 @@ function Authentication() {
 	const [password, setPassword] = useState('')
 	const [username, setUsername] = useState('')
 	const [isLoginMode, setIsLoginMode] = useState(true)
-
 	const [isLoading, setIsLoading] = useState(false)
 	const [error, setError] = useState()
 	const data = {
@@ -49,11 +48,12 @@ function Authentication() {
 			axios
 				.post('http://localhost:5000/api/users/login', data, headers)
 				.then((response) => {
+					//console.log('ID:', response.data.user._id)
 					if (response.statusText !== 'OK') {
 						throw new Error(response.message)
 					}
 					setIsLoading(false)
-					auth.login()
+					auth.login(response.data.user._id)
 				})
 				.catch((err) => {
 					console.log(err.message)
@@ -65,12 +65,13 @@ function Authentication() {
 			axios
 				.post('http://localhost:5000/api/users/signup', saveData, headers)
 				.then((response) => {
+					//console.log('ID:', response.data.users._id)
 					if (response.statusText !== 'OK') {
 						throw new Error(response.message)
 					}
-					console.log(response)
+
 					setIsLoading(false)
-					auth.login()
+					auth.login(response.data.users._id)
 				})
 				.catch((err) => {
 					console.log(err.message)

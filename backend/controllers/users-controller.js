@@ -62,7 +62,7 @@ exports.login = (request, response, next) => {
 					.json({ error: 'This user is not in the database' })
 			if (password !== user.password)
 				return response.status(401).json({ error: 'Wrong password' })
-			response.status(200).json({ message: 'Logged In' })
+			response.status(200).json({ message: 'Logged In', user: user })
 		})
 		.catch((error) => response.status(500).json({ error }))
 }
