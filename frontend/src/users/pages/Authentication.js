@@ -46,9 +46,20 @@ function Authentication() {
 		e.preventDefault()
 		if (isLoginMode) {
 			setIsLoading(true)
-			axios.post('http://localhost:5000/api/users/login')
-			console.log(JSON.stringify(data))
-			auth.login()
+			axios
+				.post('http://localhost:5000/api/users/login', data, headers)
+				.then((response) => {
+					if (response.statusText !== 'OK') {
+						throw new Error(response.message)
+					}
+					setIsLoading(false)
+					auth.login()
+				})
+				.catch((err) => {
+					console.log(err.message)
+					setIsLoading(false)
+					setError('Email or password wrong')
+				})
 		} else {
 			setIsLoading(true)
 			axios

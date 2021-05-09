@@ -52,4 +52,17 @@ exports.signUp = (request, response, next) => {
 		})
 }
 
-exports.login = (request, response, next) => {}
+exports.login = (request, response, next) => {
+	const { email, password } = request.body
+	User.findOne({ email: email })
+		.then((user) => {
+			if (!user)
+				return response
+					.status(401)
+					.json({ error: 'This user is not in the database' })
+			if (password !== user.password)
+				return response.status(401).json({ error: 'Wrong password' })
+			response.status(200).json({ message: 'Logged In' })
+		})
+		.catch((error) => response.status(500).json({ error }))
+}
