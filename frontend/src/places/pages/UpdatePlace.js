@@ -1,86 +1,100 @@
-import React, { useState } from 'react'
-import { useParams } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { useParams, useHistory } from 'react-router-dom'
 import Button from '../../shared/components/FormElements/Button'
-
+import axios from 'axios'
+import ErrorModal from '../../shared/components/UIelements/ErrorModal'
 function UpdatePlace() {
-    const DUMMY_PLACES =[
-        {
-            id: 'p1',
-            title: 'Empire State',
-            description: 'The famous place',
-            imageUrl: 'https://images.unsplash.com/photo-1583842761844-be1a7bc7fc23?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
-            adress: '20 W 34th St, New york, NY 10001',
-            locations:{
-                lat: 40.7484405,
-                lng: -73.9878583
-            },
-            creator: 'u2'
-        },
-        {
-            id: 'p2',
-            title: 'Empire State',
-            description: 'The famous place',
-            imageUrl: 'https://images.unsplash.com/photo-1583842761844-be1a7bc7fc23?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
-            adress: '20 W 34th St, New york, NY 10001',
-            locations:{
-                lat: 40.7484405,
-                lng: -73.9878583
-            }, 
-            creator: 'u1'
-        }
-    ]
-    const placeId = useParams().placeId
-    const identifiedPlace = DUMMY_PLACES.find(place =>{return place.id === placeId})
-    let t 
-    let d 
+	const placeId = useParams().placeId
 
-    if(!identifiedPlace){
-        t = ''
-        d =''
-    }else{
-        t = identifiedPlace.title
-        d = identifiedPlace.description
-    }
-    const [title , setTitle] = useState(t)
-    const [desc , setDesc] = useState(d)
-    
-    const [formData, setFormData] = useState({})
-    
-    function changeHandler(event){       
-       setTitle(event.target.value)
-    }
-    function changeHandler1(event){       
-        setDesc(event.target.value)
-     }
-    
+	const [isLoading, setIsLoading] = useState(false)
+	const [error, setError] = useState()
+	const [title, setTitle] = useState()
+	const [description, setDescription] = useState()
 
-    function sendData(event){
-        event.preventDefault()
-        setFormData({title: title,description: desc}) 
-    }
+	const data = {
+		title,
+		description,
+	}
 
-    
-    return (
-       <>
-            {title === '' || desc === '' ? (
-                <div className="center">
-                    <h2>Could not find the place</h2>
-                </div>
-            ) : (
-                <form className="place-form" onSubmit={sendData}>
-            <div className={`form-control `} >
-                <label  htmlFor=''>Title</label>
-                <input type="text" name="title" id="title" value={title} placeholder='Enter the title please' onChange={changeHandler} />
-            </div>
-            <div className={`form-control `} >
-                <label  htmlFor=''>Description</label>
-                <textarea type="text" cols={3} name="description" id="description" value={desc} placeholder='Enter the description please' onChange={changeHandler1}/>
-            </div>
-            <Button type='submit'>UPDATE PLACE</Button>
-            </form>
-        )}
-       </>
-    )
+	const headers = {
+		'Content-Type': 'application/json',
+	}
+	const history = useHistory()
+
+	useEffect(() => {
+		axios
+			.get(`http://localhost:5000/api/places/${placeId}`)
+			.then((response) => {
+				if (response.statusText !== 'OK') {
+					throw new Error(response.message)
+				}
+				setTitle(response.data.place.title)
+				setDescription(response.data.place.description)
+			})
+			.catch((error) => {
+				console.log(error)
+			})
+	}, [placeId])
+
+	function titleHandler(event) {
+		setTitle(event.target.value)
+	}
+	function descriptionHandler(event) {
+		setDescription(event.target.value)
+	}
+	function errorHandler() {
+		setError(null)
+	}
+
+	function sendData(event) {
+		event.preventDefault()
+		setIsLoading(true)
+		axios
+			.patch(`http://localhost:5000/api/places/${placeId}`, data, headers)
+			.then((response) => {
+				if (response.statusText !== 'Created') {
+					throw new Error(response.message)
+				}
+				setIsLoading(false)
+				history.push('/')
+			})
+			.catch((error) => {
+				setIsLoading(false)
+				setError('Something went wrong, please check your data')
+			})
+	}
+
+	return (
+		<>
+			<ErrorModal error={error} onClear={errorHandler} />
+			<form className='place-form' onSubmit={sendData}>
+				<div className={`form-control `}>
+					<label htmlFor=''>Title</label>
+					<input
+						type='text'
+						name='title'
+						id='title'
+						value={title}
+						placeholder='Enter the title please'
+						onChange={titleHandler}
+					/>
+				</div>
+				<div className={`form-control `}>
+					<label htmlFor=''>Description</label>
+					<textarea
+						type='text'
+						cols={3}
+						name='description'
+						id='description'
+						value={description}
+						placeholder='Enter the description please'
+						onChange={descriptionHandler}
+					/>
+				</div>
+				<Button type='submit'>UPDATE PLACE</Button>
+			</form>
+		</>
+	)
 }
 
 export default UpdatePlace

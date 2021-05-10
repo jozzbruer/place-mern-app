@@ -13,14 +13,14 @@ function UserPlaces() {
 		axios
 			.get(`http://localhost:5000/api/places/users/${userId}`)
 			.then((response) => {
-				console.log(response.data.places)
+				// console.log(response.data.places)
 				setPlaces(response.data.places)
 				setIsLoading(false)
 			})
 			.catch((error) => {
 				console.log(error)
 			})
-	}, [])
+	}, [userId])
 	return (
 		<>
 			{isLoading && <LoadingSpinner asOverlay />}
