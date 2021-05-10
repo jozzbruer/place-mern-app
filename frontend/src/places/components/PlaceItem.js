@@ -1,25 +1,39 @@
 import React, { useState, useContext } from 'react'
 import Card from '../../shared/components/UIelements/Card'
 import Button from '../../shared/components/FormElements/Button'
+import { useHistory } from 'react-router-dom'
 import './PlaceItem.css'
 import Modal from '../../shared/components/UIelements/Modal'
 import Map from '../../shared/components/UIelements/Map'
-//import axios from 'axios'
+import axios from 'axios'
 import { AuthContext } from '../../shared/context/auth-context'
+import LoadingSpinner from '../../shared/components/UIelements/LoadingSpinner'
 
 function PlaceItem(props) {
 	const auth = useContext(AuthContext)
 
 	const [showMap, setShowMap] = useState(false)
-
+	const [isLoading, setIsLoading] = useState(false)
 	const [showConfirmation, setShowConfirmation] = useState(false)
 
 	function showConfirmHandler() {
 		setShowConfirmation(true)
 	}
+	const history = useHistory()
+
 	function confirmHandler() {
 		setShowConfirmation(false)
-		console.log('Delete it...lol')
+		setIsLoading(true)
+		axios
+			.delete(`http://localhost:5000/api/places/${props.id}`)
+			.then((response) => {
+				setIsLoading(false)
+				history.push('/')
+			})
+			.catch((error) => {
+				console.log(error)
+				setIsLoading(false)
+			})
 	}
 	function cancelConfirmationHandler() {
 		setShowConfirmation(false)
@@ -31,10 +45,6 @@ function PlaceItem(props) {
 	function closeMapHandler() {
 		setShowMap(false)
 	}
-
-	// function confirmDeleteHandler(){
-	//     axios.delete(`http://localhost:5000/api/places/${props.id}`)
-	// }
 
 	return (
 		<>
@@ -67,6 +77,7 @@ function PlaceItem(props) {
 				<p>Do you want to delete it?</p>
 			</Modal>
 			<li className='place-item'>
+				{isLoading && <LoadingSpinner asOverlay />}
 				<Card className='place-item__content'>
 					<div className='place-item__image'>
 						<img src={props.image} alt={props.title} />

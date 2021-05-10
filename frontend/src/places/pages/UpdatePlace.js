@@ -3,6 +3,7 @@ import { useParams, useHistory } from 'react-router-dom'
 import Button from '../../shared/components/FormElements/Button'
 import axios from 'axios'
 import ErrorModal from '../../shared/components/UIelements/ErrorModal'
+import LoadingSpinner from '../../shared/components/UIelements/LoadingSpinner'
 function UpdatePlace() {
 	const placeId = useParams().placeId
 
@@ -68,6 +69,7 @@ function UpdatePlace() {
 		<>
 			<ErrorModal error={error} onClear={errorHandler} />
 			<form className='place-form' onSubmit={sendData}>
+				{isLoading && <LoadingSpinner asOverlay />}
 				<div className={`form-control `}>
 					<label htmlFor=''>Title</label>
 					<input

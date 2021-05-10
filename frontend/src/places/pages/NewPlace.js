@@ -38,12 +38,10 @@ function NewPlace(props) {
 
 	function sendData(event) {
 		event.preventDefault()
-		console.log(placeData)
 		setIsLoading(true)
 		axios
 			.post('http://localhost:5000/api/places', placeData, headers)
 			.then((response) => {
-				console.log(response)
 				if (response.statusText !== 'Created') {
 					throw new Error(response.message)
 				}
