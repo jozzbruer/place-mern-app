@@ -48,7 +48,6 @@ function Authentication() {
 			axios
 				.post('http://localhost:5000/api/users/login', data, headers)
 				.then((response) => {
-					//console.log('ID:', response.data.user._id)
 					if (response.statusText !== 'OK') {
 						throw new Error(response.message)
 					}

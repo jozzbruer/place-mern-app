@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { useParams, useHistory } from 'react-router-dom'
 import Button from '../../shared/components/FormElements/Button'
+import { AuthContext } from '../../shared/context/auth-context'
 import axios from 'axios'
 import ErrorModal from '../../shared/components/UIelements/ErrorModal'
 import LoadingSpinner from '../../shared/components/UIelements/LoadingSpinner'
@@ -21,6 +22,7 @@ function UpdatePlace() {
 		'Content-Type': 'application/json',
 	}
 	const history = useHistory()
+	const auth = useContext(AuthContext)
 
 	useEffect(() => {
 		axios
@@ -57,7 +59,7 @@ function UpdatePlace() {
 					throw new Error(response.message)
 				}
 				setIsLoading(false)
-				history.push('/')
+				history.push(`/${auth.userId}/places`)
 			})
 			.catch((error) => {
 				setIsLoading(false)
