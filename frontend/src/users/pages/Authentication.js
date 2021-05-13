@@ -4,6 +4,7 @@ import Card from '../../shared/components/UIelements/Card'
 import { AuthContext } from '../../shared/context/auth-context'
 import ErrorModal from '../../shared/components/UIelements/ErrorModal'
 import LoadingSpinner from '../../shared/components/UIelements/LoadingSpinner'
+import ImageUpload from '../../shared/components/FormElements/ImageUpload'
 
 import './Authentication.css'
 import axios from 'axios'
@@ -101,12 +102,13 @@ function Authentication() {
 								name='username'
 								id='username'
 								value={username}
-								placeholder='Enter an email please'
+								placeholder='Enter your username please'
 								onChange={changeUsernameHandler}
 								required
 							/>
 						</div>
 					) : null}
+					{!isLoginMode && <ImageUpload id='image' center />}
 					<div className={`form-control `}>
 						<label htmlFor=''>Email</label>
 						<input
