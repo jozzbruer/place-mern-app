@@ -60,12 +60,8 @@ function Authentication() {
 		'Content-Type': 'application/json',
 	}
 
-	const saveData = {
-		name: username,
-		email,
-		password,
-		image: file,
-	}
+	const saveData = new FormData()
+
 	function changeEmailHandler(event) {
 		setEmail(event.target.value)
 	}
@@ -75,7 +71,6 @@ function Authentication() {
 	function changePasswordHandler(event) {
 		setPassword(event.target.value)
 	}
-	console.log(saveData)
 
 	function sendData(e) {
 		e.preventDefault()
@@ -96,9 +91,13 @@ function Authentication() {
 					setError('Email or password wrong')
 				})
 		} else {
+			saveData.append('email', email)
+			saveData.append('name', username)
+			saveData.append('password', password)
+			saveData.append('image', file)
 			setIsLoading(true)
 			axios
-				.post('http://localhost:5000/api/users/signup', saveData, headers)
+				.post('http://localhost:5000/api/users/signup', saveData)
 				.then((response) => {
 					//console.log('ID:', response.data.users._id)
 					if (response.statusText !== 'OK') {
@@ -114,7 +113,7 @@ function Authentication() {
 					setError('Something went wrong, please check it out')
 				})
 		}
-		console.log(saveData)
+		// console.log(saveData)
 	}
 	function switchModeHandler() {
 		setIsLoginMode(!isLoginMode)

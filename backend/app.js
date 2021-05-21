@@ -1,6 +1,8 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
+const fs = require('fs')
+const path = require('path')
 
 const placesRoutes = require('./routes/places-routes')
 const usersRoutes = require('./routes/users-routes')
@@ -35,6 +37,11 @@ app.use((request, response, next) => {
 })
 app.use(bodyParser.json())
 
+app.use(
+	'/uploads/images',
+	express.static(path.join(__dirname, '/uploads/images'))
+)
+
 app.use('/api/places', placesRoutes)
 app.use('/api/users', usersRoutes)
 
@@ -44,6 +51,11 @@ app.use((request, response, next) => {
 })
 
 app.use((error, request, response, next) => {
+	if (request.file) {
+		fs.unlink(request.file.path, (error) => {
+			console.log(error)
+		})
+	}
 	if (response.headerSent) {
 		return next(error)
 	}
