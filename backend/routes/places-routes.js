@@ -1,5 +1,6 @@
 const express = require('express')
 const validator = require('express-validator')
+const fileUpload = require('../middleware/file-upload')
 
 const router = express.Router()
 
@@ -13,6 +14,7 @@ router.get('/users/:uid', placesCtrl.getPlacesByUserId)
 
 router.post(
 	'/',
+	fileUpload.single('image'),
 	[
 		validator.check('title').not().isEmpty(),
 		validator.check('description').isLength({ min: 5 }),

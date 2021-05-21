@@ -2,6 +2,7 @@ const { v4: uuidv4 } = require('uuid')
 const HttpError = require('../models/http-error')
 const validator = require('express-validator')
 const mongoose = require('mongoose')
+const fs = require('fs')
 
 const getCoordsForAddress = require('../util/location')
 const Place = require('../models/Place')
@@ -57,8 +58,7 @@ exports.createPlace = async (request, response, next) => {
 		description,
 		adress,
 		location: coordinates,
-		image:
-			'https://images.unsplash.com/photo-1583842761844-be1a7bc7fc23?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
+		image: request.file.path,
 		creator,
 	})
 	let user
@@ -136,6 +136,7 @@ exports.deletePlace = async (request, response, next) => {
 		return next(error)
 	}
 
+	const imagePath = place.image
 	try {
 		const sess = await mongoose.startSession()
 		sess.startTransaction()
@@ -150,5 +151,8 @@ exports.deletePlace = async (request, response, next) => {
 		)
 		return next(error)
 	}
+	fs.unlink(imagePath, (error) => {
+		console.log(error)
+	})
 	response.status(200).json({ Message: 'Place deleted!' })
 }
