@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useRef, useEffect } from 'react'
 import Button from '../../shared/components/FormElements/Button'
 import Card from '../../shared/components/UIelements/Card'
 import { AuthContext } from '../../shared/context/auth-context'
@@ -12,12 +12,45 @@ import axios from 'axios'
 function Authentication() {
 	const auth = useContext(AuthContext)
 
+	const filePickerReference = useRef()
+
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
 	const [username, setUsername] = useState('')
 	const [isLoginMode, setIsLoginMode] = useState(true)
 	const [isLoading, setIsLoading] = useState(false)
+	// const [image, setImage] = useState()s
 	const [error, setError] = useState()
+
+	// Image upload variables
+
+	const [file, setFile] = useState()
+	const [preview, setPreview] = useState()
+
+	function pickImageHandler() {
+		filePickerReference.current.click()
+	}
+
+	useEffect(() => {
+		if (!file) {
+			return
+		}
+		const fileReader = new FileReader()
+		fileReader.onload = function () {
+			setPreview(fileReader.result)
+		}
+		fileReader.readAsDataURL(file)
+	}, [file])
+
+	function pickedHandler(event) {
+		if (event.target.files && event.target.files.length === 1) {
+			const pickedFile = event.target.files[0]
+			setFile(pickedFile)
+
+			return
+		}
+		// setFile(event.target.files[0])
+	}
 	const data = {
 		email,
 		password,
@@ -31,6 +64,7 @@ function Authentication() {
 		name: username,
 		email,
 		password,
+		image: file,
 	}
 	function changeEmailHandler(event) {
 		setEmail(event.target.value)
@@ -41,6 +75,7 @@ function Authentication() {
 	function changePasswordHandler(event) {
 		setPassword(event.target.value)
 	}
+	console.log(saveData)
 
 	function sendData(e) {
 		e.preventDefault()
@@ -79,6 +114,7 @@ function Authentication() {
 					setError('Something went wrong, please check it out')
 				})
 		}
+		console.log(saveData)
 	}
 	function switchModeHandler() {
 		setIsLoginMode(!isLoginMode)
@@ -108,14 +144,22 @@ function Authentication() {
 							/>
 						</div>
 					) : null}
-					{!isLoginMode && <ImageUpload id='image' center />}
+					{!isLoginMode && (
+						<ImageUpload
+							reference={filePickerReference}
+							preview={preview}
+							pickImageHandler={pickImageHandler}
+							pickedHandler={pickedHandler}
+							id='image'
+							center
+						/>
+					)}
 					<div className={`form-control `}>
 						<label htmlFor=''>Email</label>
 						<input
 							type='email'
 							name='email'
 							id='email'
-							z
 							value={email}
 							placeholder='Enter an email please'
 							onChange={changeEmailHandler}
