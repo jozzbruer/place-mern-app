@@ -1,6 +1,5 @@
 import React from 'react'
 import { GoogleMap, useLoadScript, Marker } from '@react-google-maps/api'
-import token from '../../../token'
 import StylesMap from '../../../StyleMap'
 import './Map.css'
 
@@ -18,7 +17,7 @@ const libraries = ['places']
 function Map(props) {
 	// eslint-disable-next-line
 	const { isLoaded, loadError } = useLoadScript({
-		googleMapsApiKey: token,
+		googleMapsApiKey: process.env.REACT_APP_TOKEN,
 		libraries,
 	})
 	console.log(props.center)
