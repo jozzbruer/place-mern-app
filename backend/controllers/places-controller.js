@@ -16,24 +16,53 @@ exports.getAllPlaces = (request, response, next) => {
 			return next(error)
 		})
 }
-exports.getPlaceById = (request, response, next) => {
+exports.getPlaceById = async (request, response, next) => {
 	const placeId = request.params.pid
-	Place.findOne({ _id: placeId })
-		.then((place) => response.status(200).json({ place }))
-		.catch((error) => {
-			error = new HttpError("We could'nt find a place for the provided ID", 404)
-			return next(error)
-		})
+
+	let place
+	try {
+		place = await Place.findById(placeId)
+	} catch (err) {
+		const error = new HttpError(
+			'Something went wrong, we could not find a place',
+			500
+		)
+		return next(error)
+	}
+
+	if (!place) {
+		const error = new HttpError(
+			'Could not find a place for the provided ID',
+			404
+		)
+		return next(error)
+	}
+	response.json({ place })
 }
 
-exports.getPlacesByUserId = (request, response, next) => {
+exports.getPlacesByUserId = async (request, response, next) => {
 	const userId = request.params.uid
-	Place.find({ creator: userId })
-		.then((places) => response.status(200).json({ places }))
-		.catch((error) => {
-			error = new HttpError("We could'nt find place for this user ID", 400)
-			return next(error)
-		})
+
+	let places
+
+	try {
+		places = await Place.find({ creator: userId })
+	} catch (err) {
+		const error = new HttpError(
+			'Fetching places failed, please try aigain later.',
+			500
+		)
+		return next(error)
+	}
+
+	if (!places) {
+		const error = new HttpError(
+			'Could not find a places for the provided user ID',
+			404
+		)
+		return next(error)
+	}
+	response.json({ places })
 }
 exports.createPlace = async (request, response, next) => {
 	const errors = validator.validationResult(request)
@@ -88,7 +117,7 @@ exports.createPlace = async (request, response, next) => {
 	response.status(201).json({ place: createPlace })
 }
 
-exports.updatePlace = (request, response, next) => {
+exports.updatePlace = async (request, response, next) => {
 	const { title, description } = request.body // const title = request.body.title
 	const errors = validator.validationResult(request)
 
@@ -100,20 +129,32 @@ exports.updatePlace = (request, response, next) => {
 		return next(error)
 	}
 	const placeId = request.params.pid
-	Place.updateOne({ _id: placeId }, { title, description, _id: placeId })
-		.then(() => response.status(201).json({ Message: 'Succesfully update' }))
-		.catch((error) => {
-			error = new HttpError('cant update this', 500)
-			return next(error)
-		})
 
-	// Update the field from the body
-	// updatePlace.title = title
-	// updatePlace.description = description
+	let place
+	try {
+		place = await Place.findById(placeId)
+	} catch (error) {
+		error = new HttpError(
+			'Somthing went wrong, could not update the place.',
+			500
+		)
+		return next(error)
+	}
 
-	// DUMMY_PLACES[placeIndex] = updatePlace
-	// response.status(200)
-	// response.json({ place: updatePlace })
+	place.title = title
+	place.description = description
+
+	try {
+		await place.save()
+	} catch (error) {
+		error = new HttpError(
+			'Somthing went wrong, could not update the place.',
+			500
+		)
+		return next(error)
+	}
+
+	response.status(201).json({ Message: 'Successfully Update' })
 }
 
 exports.deletePlace = async (request, response, next) => {
