@@ -58,9 +58,7 @@ function NewPlace(props) {
 
 	const placeData = new FormData()
 
-	const headers = {
-		'Content-Type': 'application/json',
-	}
+	const header = `Authorization: Bearer ${auth.token}`
 	const history = useHistory()
 
 	function sendData(event) {
@@ -72,7 +70,7 @@ function NewPlace(props) {
 		placeData.append('creator', auth.userId)
 		setIsLoading(true)
 		axios
-			.post('http://localhost:5000/api/places', placeData, headers)
+			.post('http://localhost:5000/api/places', placeData, { headers: header })
 			.then((response) => {
 				if (response.statusText !== 'Created') {
 					throw new Error(response.message)

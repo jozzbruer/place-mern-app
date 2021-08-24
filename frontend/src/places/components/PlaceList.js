@@ -12,7 +12,7 @@ function PlaceList(props) {
 				<div className='place-list center'>
 					<Card>
 						No places found. Maybe create one?
-						<Button to='places/new'>Share Place</Button>
+						<Button to='/places/new'>Share Place</Button>
 					</Card>
 				</div>
 			) : (

@@ -83,7 +83,7 @@ function Authentication() {
 						throw new Error(response.message)
 					}
 					setIsLoading(false)
-					auth.login(response.data.user._id)
+					auth.login(response.data.userId, response.data.token)
 				})
 				.catch((err) => {
 					console.log(err.message)
@@ -105,7 +105,7 @@ function Authentication() {
 					}
 
 					setIsLoading(false)
-					auth.login(response.data.users._id)
+					auth.login(response.data.userId, response.data.token)
 				})
 				.catch((err) => {
 					console.log(err.message)
