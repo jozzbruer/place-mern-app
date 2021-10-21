@@ -1,49 +1,53 @@
-import React, { useState, useContext } from 'react'
-import Card from '../../shared/components/UIelements/Card'
-import Button from '../../shared/components/FormElements/Button'
-import { useHistory } from 'react-router-dom'
-import './PlaceItem.css'
-import Modal from '../../shared/components/UIelements/Modal'
-import Map from '../../shared/components/UIelements/Map'
-import axios from 'axios'
-import { AuthContext } from '../../shared/context/auth-context'
-import LoadingSpinner from '../../shared/components/UIelements/LoadingSpinner'
+import React, { useState, useContext } from 'react';
+import Card from '../../shared/components/UIelements/Card';
+import Button from '../../shared/components/FormElements/Button';
+import { useHistory } from 'react-router-dom';
+import './PlaceItem.css';
+import Modal from '../../shared/components/UIelements/Modal';
+import Map from '../../shared/components/UIelements/Map';
+import axios from 'axios';
+import { AuthContext } from '../../shared/context/auth-context';
+import LoadingSpinner from '../../shared/components/UIelements/LoadingSpinner';
 
 function PlaceItem(props) {
-	const auth = useContext(AuthContext)
+	const auth = useContext(AuthContext);
 
-	const [showMap, setShowMap] = useState(false)
-	const [isLoading, setIsLoading] = useState(false)
-	const [showConfirmation, setShowConfirmation] = useState(false)
+	const [showMap, setShowMap] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
+	const [showConfirmation, setShowConfirmation] = useState(false);
 
 	function showConfirmHandler() {
-		setShowConfirmation(true)
+		setShowConfirmation(true);
 	}
-	const history = useHistory()
+	const history = useHistory();
 
 	function confirmHandler() {
-		setShowConfirmation(false)
-		setIsLoading(true)
+		setShowConfirmation(false);
+		setIsLoading(true);
 		axios
-			.delete(`http://localhost:5000/api/places/${props.id}`)
+			.delete(`http://localhost:5000/api/places/${props.id}`, {
+				headers: {
+					Authorization: 'Bearer ' + auth.token,
+				},
+			})
 			.then((response) => {
-				setIsLoading(false)
-				history.push('/')
+				setIsLoading(false);
+				history.push('/');
 			})
 			.catch((error) => {
-				console.log(error)
-				setIsLoading(false)
-			})
+				console.log(error);
+				setIsLoading(false);
+			});
 	}
 	function cancelConfirmationHandler() {
-		setShowConfirmation(false)
+		setShowConfirmation(false);
 	}
 
 	function openMapHandler() {
-		setShowMap(true)
+		setShowMap(true);
 	}
 	function closeMapHandler() {
-		setShowMap(false)
+		setShowMap(false);
 	}
 
 	return (
@@ -106,7 +110,7 @@ function PlaceItem(props) {
 				</Card>
 			</li>
 		</>
-	)
+	);
 }
 
-export default PlaceItem
+export default PlaceItem;

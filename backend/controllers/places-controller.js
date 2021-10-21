@@ -141,16 +141,21 @@ exports.updatePlace = async (request, response, next) => {
 		return next(error)
 	}
 
+	if (place.creator.toString() !== request.userData.userId) {
+		const error = new HttpError(
+			'Somthing went wrong, could not update the place.',
+			401
+		)
+		return next(error)
+	}
+
 	place.title = title
 	place.description = description
 
 	try {
 		await place.save()
 	} catch (error) {
-		error = new HttpError(
-			'Somthing went wrong, could not update the place.',
-			500
-		)
+		error = new HttpError('You are not allowed to edit this place.', 500)
 		return next(error)
 	}
 

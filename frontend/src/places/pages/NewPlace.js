@@ -1,88 +1,120 @@
-import React, { useState, useContext, useRef, useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
-import Button from '../../shared/components/FormElements/Button'
-import LoadingSpinner from '../../shared/components/UIelements/LoadingSpinner'
-import { AuthContext } from '../../shared/context/auth-context'
-import axios from 'axios'
+import React, { useState, useContext, useRef, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
+import Button from '../../shared/components/FormElements/Button';
+import LoadingSpinner from '../../shared/components/UIelements/LoadingSpinner';
+import { AuthContext } from '../../shared/context/auth-context';
+import axios from 'axios';
 
-import './NewPlace.css'
-import ImageUpload from '../../shared/components/FormElements/ImageUpload'
+import './NewPlace.css';
+import ImageUpload from '../../shared/components/FormElements/ImageUpload';
 // import { VALIDATOR_REQUIRE } from '../../shared/utils/Validator'
 
 function NewPlace(props) {
-	const auth = useContext(AuthContext)
-	const filePickerReference = useRef()
+	const auth = useContext(AuthContext);
+	const filePickerReference = useRef();
 
-	const [title, setTitle] = useState('')
-	const [description, setDescription] = useState('')
-	const [adress, setAdress] = useState('')
-	const [isLoading, setIsLoading] = useState(false)
+	const [title, setTitle] = useState('');
+	const [description, setDescription] = useState('');
+	const [adress, setAdress] = useState('');
+	const [isLoading, setIsLoading] = useState(false);
 
 	//Image upload Variable
-	const [file, setFile] = useState()
-	const [preview, setPreview] = useState()
+	const [file, setFile] = useState();
+	const [preview, setPreview] = useState();
 
 	function pickImageHandler() {
-		filePickerReference.current.click()
+		filePickerReference.current.click();
 	}
 
 	useEffect(() => {
 		if (!file) {
-			return
+			return;
 		}
-		const fileReader = new FileReader()
+		const fileReader = new FileReader();
 		fileReader.onload = function () {
-			setPreview(fileReader.result)
-		}
-		fileReader.readAsDataURL(file)
-	}, [file])
+			setPreview(fileReader.result);
+		};
+		fileReader.readAsDataURL(file);
+	}, [file]);
 
 	function pickedHandler(event) {
 		if (event.target.files && event.target.files.length === 1) {
-			const pickedFile = event.target.files[0]
-			setFile(pickedFile)
+			const pickedFile = event.target.files[0];
+			setFile(pickedFile);
 
-			return
+			return;
 		}
 	}
 
 	function adressHandler(event) {
-		setAdress(event.target.value)
+		setAdress(event.target.value);
 	}
 	function titleHandler(event) {
-		setTitle(event.target.value)
+		setTitle(event.target.value);
 	}
 	function descriptionHandler(event) {
-		setDescription(event.target.value)
+		setDescription(event.target.value);
 	}
 
-	const placeData = new FormData()
+	const placeData = new FormData();
 
-	const header = `Authorization: Bearer ${auth.token}`
-	const history = useHistory()
+	const history = useHistory();
 
-	function sendData(event) {
-		event.preventDefault()
-		placeData.append('title', title)
-		placeData.append('description', description)
-		placeData.append('adress', adress)
-		placeData.append('image', file)
-		placeData.append('creator', auth.userId)
-		setIsLoading(true)
-		axios
-			.post('http://localhost:5000/api/places', placeData, { headers: header })
-			.then((response) => {
-				if (response.statusText !== 'Created') {
-					throw new Error(response.message)
+	// function sendData(event) {
+	// 	event.preventDefault()
+	// 	placeData.append('title', title)
+	// 	placeData.append('description', description)
+	// 	placeData.append('adress', adress)
+	// 	placeData.append('image', file)
+	// 	placeData.append('creator', auth.userId)
+	// 	setIsLoading(true)
+	// 	axios
+	// 		.post('http://localhost:5000/api/places', placeData, {
+	// 			headers: {
+	// 				Authorization: `Bearer ${auth.token}`,
+	// 			},
+	// 		})
+	// 		.then((response) => {
+	// 			if (response.statusText !== 'Created') {
+	// 				throw new Error(response.message)
+	// 			}
+	// 			setIsLoading(false)
+	// 			history.push('/')
+	// 		})
+	// 		.catch((error) => {
+	// 			console.log(error)
+	// 			setIsLoading(false)
+	// 		})
+	// }
+
+	const sendData = async (event) => {
+		event.preventDefault();
+		placeData.append('title', title);
+		placeData.append('description', description);
+		placeData.append('adress', adress);
+		placeData.append('image', file);
+		placeData.append('creator', auth.userId);
+		setIsLoading(true);
+		try {
+			const response = await axios.post(
+				'http://localhost:5000/api/places',
+				placeData,
+				{
+					headers: {
+						Authorization: 'Bearer ' + auth.token,
+					},
 				}
-				setIsLoading(false)
-				history.push('/')
-			})
-			.catch((error) => {
-				console.log(error)
-				setIsLoading(false)
-			})
-	}
+			);
+			if (response.statusText !== 'Created') {
+				throw new Error(response.message);
+			}
+			setIsLoading(false);
+			history.push('/');
+		} catch (error) {
+			console.log(error);
+			setIsLoading(false);
+		}
+	};
 
 	return (
 		<>
@@ -135,7 +167,7 @@ function NewPlace(props) {
 				<Button type='submit'>ADD PLACE</Button>
 			</form>
 		</>
-	)
+	);
 }
 
-export default NewPlace
+export default NewPlace;

@@ -1,70 +1,71 @@
-import React, { useEffect, useState, useContext } from 'react'
-import { useParams, useHistory } from 'react-router-dom'
-import Button from '../../shared/components/FormElements/Button'
-import { AuthContext } from '../../shared/context/auth-context'
-import axios from 'axios'
-import ErrorModal from '../../shared/components/UIelements/ErrorModal'
-import LoadingSpinner from '../../shared/components/UIelements/LoadingSpinner'
+import React, { useEffect, useState, useContext } from 'react';
+import { useParams, useHistory } from 'react-router-dom';
+import Button from '../../shared/components/FormElements/Button';
+import { AuthContext } from '../../shared/context/auth-context';
+import axios from 'axios';
+import ErrorModal from '../../shared/components/UIelements/ErrorModal';
+import LoadingSpinner from '../../shared/components/UIelements/LoadingSpinner';
 function UpdatePlace() {
-	const placeId = useParams().placeId
+	const placeId = useParams().placeId;
 
-	const [isLoading, setIsLoading] = useState(false)
-	const [error, setError] = useState()
-	const [title, setTitle] = useState()
-	const [description, setDescription] = useState()
+	const [isLoading, setIsLoading] = useState(false);
+	const [error, setError] = useState();
+	const [title, setTitle] = useState();
+	const [description, setDescription] = useState();
 
 	const data = {
 		title,
 		description,
-	}
+	};
 
-	const headers = {
-		'Content-Type': 'application/json',
-	}
-	const history = useHistory()
-	const auth = useContext(AuthContext)
+	const history = useHistory();
+	const auth = useContext(AuthContext);
 
 	useEffect(() => {
 		axios
 			.get(`http://localhost:5000/api/places/${placeId}`)
 			.then((response) => {
 				if (response.statusText !== 'OK') {
-					throw new Error(response.message)
+					throw new Error(response.message);
 				}
-				setTitle(response.data.place.title)
-				setDescription(response.data.place.description)
+				setTitle(response.data.place.title);
+				setDescription(response.data.place.description);
 			})
 			.catch((error) => {
-				console.log(error)
-			})
-	}, [placeId])
+				console.log(error);
+			});
+	}, [placeId]);
 
 	function titleHandler(event) {
-		setTitle(event.target.value)
+		setTitle(event.target.value);
 	}
 	function descriptionHandler(event) {
-		setDescription(event.target.value)
+		setDescription(event.target.value);
 	}
 	function errorHandler() {
-		setError(null)
+		setError(null);
 	}
 
 	function sendData(event) {
-		event.preventDefault()
-		setIsLoading(true)
+		event.preventDefault();
+		setIsLoading(true);
 		axios
-			.patch(`http://localhost:5000/api/places/${placeId}`, data, headers)
+			.patch(`http://localhost:5000/api/places/${placeId}`, data, {
+				headers: {
+					Authorization: 'Bearer ' + auth.token,
+				},
+			})
 			.then((response) => {
 				if (response.statusText !== 'Created') {
-					throw new Error(response.message)
+					throw new Error(response.message);
 				}
-				setIsLoading(false)
-				history.push(`/${auth.userId}/places`)
+				setIsLoading(false);
+				history.push(`/${auth.userId}/places`);
 			})
 			.catch((error) => {
-				setIsLoading(false)
-				setError('Something went wrong, please check your data')
-			})
+				setIsLoading(false);
+				setError('Something went wrong, please check your data');
+			});
 	}
 
 	return (
@@ -98,7 +99,7 @@ function UpdatePlace() {
 				<Button type='submit'>UPDATE PLACE</Button>
 			</form>
 		</>
-	)
+	);
 }
 
-export default UpdatePlace
+export default UpdatePlace;
