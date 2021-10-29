@@ -25,7 +25,7 @@ function PlaceItem(props) {
 		setShowConfirmation(false);
 		setIsLoading(true);
 		axios
-			.delete(`http://localhost:5000/api/places/${props.id}`, {
+			.delete(`${process.env.REACT_APP_SERVER_URI}/places/${props.id}`, {
 				headers: {
 					Authorization: 'Bearer ' + auth.token,
 				},
@@ -85,7 +85,7 @@ function PlaceItem(props) {
 				<Card className='place-item__content'>
 					<div className='place-item__image'>
 						<img
-							src={`http://localhost:5000/${props.image}`}
+							src={`${process.env.REACT_APP_ASSETS_URI}/${props.image}`}
 							alt={props.title}
 						/>
 					</div>

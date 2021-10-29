@@ -1,127 +1,125 @@
-import React, { useState, useContext, useRef, useEffect } from 'react'
-import Button from '../../shared/components/FormElements/Button'
-import Card from '../../shared/components/UIelements/Card'
-import { AuthContext } from '../../shared/context/auth-context'
-import ErrorModal from '../../shared/components/UIelements/ErrorModal'
-import LoadingSpinner from '../../shared/components/UIelements/LoadingSpinner'
-import ImageUpload from '../../shared/components/FormElements/ImageUpload'
+import React, { useState, useContext, useRef, useEffect } from 'react';
+import Button from '../../shared/components/FormElements/Button';
+import Card from '../../shared/components/UIelements/Card';
+import { AuthContext } from '../../shared/context/auth-context';
+import ErrorModal from '../../shared/components/UIelements/ErrorModal';
+import LoadingSpinner from '../../shared/components/UIelements/LoadingSpinner';
+import ImageUpload from '../../shared/components/FormElements/ImageUpload';
 
-import './Authentication.css'
-import axios from 'axios'
+import './Authentication.css';
+import axios from 'axios';
 
 function Authentication() {
-	const auth = useContext(AuthContext)
+	const auth = useContext(AuthContext);
 
-	const filePickerReference = useRef()
+	const filePickerReference = useRef();
 
-	const [email, setEmail] = useState('')
-	const [password, setPassword] = useState('')
-	const [username, setUsername] = useState('')
-	const [isLoginMode, setIsLoginMode] = useState(true)
-	const [isLoading, setIsLoading] = useState(false)
+	const [email, setEmail] = useState('');
+	const [password, setPassword] = useState('');
+	const [username, setUsername] = useState('');
+	const [isLoginMode, setIsLoginMode] = useState(true);
+	const [isLoading, setIsLoading] = useState(false);
 	// const [image, setImage] = useState()s
-	const [error, setError] = useState()
+	const [error, setError] = useState();
 
 	// Image upload variables
 
-	const [file, setFile] = useState()
-	const [preview, setPreview] = useState()
+	const [file, setFile] = useState();
+	const [preview, setPreview] = useState();
 
 	function pickImageHandler() {
-		filePickerReference.current.click()
+		filePickerReference.current.click();
 	}
 
 	useEffect(() => {
 		if (!file) {
-			return
+			return;
 		}
-		const fileReader = new FileReader()
+		const fileReader = new FileReader();
 		fileReader.onload = function () {
-			setPreview(fileReader.result)
-		}
-		fileReader.readAsDataURL(file)
-	}, [file])
+			setPreview(fileReader.result);
+		};
+		fileReader.readAsDataURL(file);
+	}, [file]);
 
 	function pickedHandler(event) {
 		if (event.target.files && event.target.files.length === 1) {
-			const pickedFile = event.target.files[0]
-			setFile(pickedFile)
+			const pickedFile = event.target.files[0];
+			setFile(pickedFile);
 
-			return
+			return;
 		}
 		// setFile(event.target.files[0])
 	}
 	const data = {
 		email,
 		password,
-	}
+	};
 
 	const headers = {
 		'Content-Type': 'application/json',
-	}
+	};
 
-	const saveData = new FormData()
+	const saveData = new FormData();
 
 	function changeEmailHandler(event) {
-		setEmail(event.target.value)
+		setEmail(event.target.value);
 	}
 	function changeUsernameHandler(event) {
-		setUsername(event.target.value)
+		setUsername(event.target.value);
 	}
 	function changePasswordHandler(event) {
-		setPassword(event.target.value)
+		setPassword(event.target.value);
 	}
 
 	function sendData(e) {
-		e.preventDefault()
+		e.preventDefault();
 		if (isLoginMode) {
-			setIsLoading(true)
+			setIsLoading(true);
 			axios
-				.post('http://localhost:5000/api/users/login', data, headers)
+				.post(`${process.env.REACT_APP_SERVER_URI}/users/login`, data, headers)
 				.then((response) => {
-					console.log(response.data)
 					if (response.statusText !== 'OK') {
-						throw new Error(response.message)
+						throw new Error(response.message);
 					}
-					setIsLoading(false)
-					auth.login(response.data.userId, response.data.token)
+					setIsLoading(false);
+					auth.login(response.data.userId, response.data.token);
 				})
 				.catch((err) => {
-					console.log(err.message)
-					setIsLoading(false)
-					setError('Email or password wrong')
-				})
+					console.log(err.message);
+					setIsLoading(false);
+					setError('Email or password wrong');
+				});
 		} else {
-			saveData.append('email', email)
-			saveData.append('name', username)
-			saveData.append('password', password)
-			saveData.append('image', file)
-			setIsLoading(true)
+			saveData.append('email', email);
+			saveData.append('name', username);
+			saveData.append('password', password);
+			saveData.append('image', file);
+			setIsLoading(true);
 			axios
-				.post('http://localhost:5000/api/users/signup', saveData)
+				.post(`${process.env.REACT_APP_SERVER_URI}/users/signup`, saveData)
 				.then((response) => {
-					//console.log('ID:', response.data.users._id)
 					if (response.statusText !== 'OK') {
-						throw new Error(response.message)
+						throw new Error(response.message);
 					}
 
-					setIsLoading(false)
-					auth.login(response.data.userId, response.data.token)
+					setIsLoading(false);
+					auth.login(response.data.userId, response.data.token);
 				})
 				.catch((err) => {
-					console.log(err.message)
-					setIsLoading(false)
-					setError('Something went wrong, please check it out')
-				})
+					console.log(err.message);
+					setIsLoading(false);
+					setError('Something went wrong, please check it out');
+				});
 		}
 		// console.log(saveData)
 	}
 	function switchModeHandler() {
-		setIsLoginMode(!isLoginMode)
+		setIsLoginMode(!isLoginMode);
 	}
 
 	function errorHandler() {
-		setError(null)
+		setError(null);
 	}
 	return (
 		<>
@@ -185,7 +183,7 @@ function Authentication() {
 				</Button>
 			</Card>
 		</>
-	)
+	);
 }
 
-export default Authentication
+export default Authentication;

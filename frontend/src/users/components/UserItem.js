@@ -1,10 +1,10 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React from 'react';
+import { Link } from 'react-router-dom';
 
-import Avatar from '../../shared/components/UIelements/Avatar'
-import Card from '../../shared/components/UIelements/Card'
+import Avatar from '../../shared/components/UIelements/Avatar';
+import Card from '../../shared/components/UIelements/Card';
 
-import './UserItem.css'
+import './UserItem.css';
 
 function UserItem(props) {
 	return (
@@ -13,7 +13,7 @@ function UserItem(props) {
 				<Link to={`/${props.id}/places`}>
 					<div className='user-item__image'>
 						<Avatar
-							image={`http://localhost:5000/${props.image}`}
+							image={`${process.env.REACT_APP_ASSETS_URI}/${props.image}`}
 							alt={props.name}
 						/>
 					</div>
@@ -26,7 +26,7 @@ function UserItem(props) {
 				</Link>
 			</Card>
 		</li>
-	)
+	);
 }
 
-export default UserItem
+export default UserItem;

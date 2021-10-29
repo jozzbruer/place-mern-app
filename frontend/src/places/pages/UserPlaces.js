@@ -1,32 +1,31 @@
-import React, { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
-import PlaceList from '../components/PlaceList'
-import LoadingSpinner from '../../shared/components/UIelements/LoadingSpinner'
-import axios from 'axios'
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import PlaceList from '../components/PlaceList';
+import LoadingSpinner from '../../shared/components/UIelements/LoadingSpinner';
+import axios from 'axios';
 
 function UserPlaces() {
-	const [places, setPlaces] = useState([])
-	const [isLoading, setIsLoading] = useState(false)
-	const userId = useParams().userId
+	const [places, setPlaces] = useState([]);
+	const [isLoading, setIsLoading] = useState(false);
+	const userId = useParams().userId;
 	useEffect(() => {
-		setIsLoading(true)
+		setIsLoading(true);
 		axios
-			.get(`http://localhost:5000/api/places/users/${userId}`)
+			.get(`${process.env.REACT_APP_SERVER_URI}/places/users/${userId}`)
 			.then((response) => {
-				// console.log(response.data.places)
-				setPlaces(response.data.places)
-				setIsLoading(false)
+				setPlaces(response.data.places);
+				setIsLoading(false);
 			})
 			.catch((error) => {
-				console.log(error)
-			})
-	}, [userId])
+				console.log(error);
+			});
+	}, [userId]);
 	return (
 		<>
 			{isLoading && <LoadingSpinner asOverlay />}
 			{!isLoading && <PlaceList items={places} />}
 		</>
-	)
+	);
 }
 
-export default UserPlaces
+export default UserPlaces;

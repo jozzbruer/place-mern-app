@@ -64,7 +64,7 @@ exports.signUp = (request, response, next) => {
 						email: createUser.email,
 						token: jwt.sign(
 							{ userId: createUser._id, email: createUser.email },
-							'RANDOM_SECRET_TOKEN',
+							process.env.JWT_KEY,
 							{ expiresIn: '1h' }
 						),
 					})
@@ -119,7 +119,7 @@ exports.login = async (request, response, next) => {
 	try {
 		token = jwt.sign(
 			{ userId: existingUser._id, email: existingUser.email },
-			'RANDOM_SECRET_TOKEN',
+			process.env.JWT_KEY,
 			{ expiresIn: '1h' }
 		);
 	} catch (err) {

@@ -60,33 +60,6 @@ function NewPlace(props) {
 
 	const history = useHistory();
 
-	// function sendData(event) {
-	// 	event.preventDefault()
-	// 	placeData.append('title', title)
-	// 	placeData.append('description', description)
-	// 	placeData.append('adress', adress)
-	// 	placeData.append('image', file)
-	// 	placeData.append('creator', auth.userId)
-	// 	setIsLoading(true)
-	// 	axios
-	// 		.post('http://localhost:5000/api/places', placeData, {
-	// 			headers: {
-	// 				Authorization: `Bearer ${auth.token}`,
-	// 			},
-	// 		})
-	// 		.then((response) => {
-	// 			if (response.statusText !== 'Created') {
-	// 				throw new Error(response.message)
-	// 			}
-	// 			setIsLoading(false)
-	// 			history.push('/')
-	// 		})
-	// 		.catch((error) => {
-	// 			console.log(error)
-	// 			setIsLoading(false)
-	// 		})
-	// }
-
 	const sendData = async (event) => {
 		event.preventDefault();
 		placeData.append('title', title);
@@ -97,7 +70,7 @@ function NewPlace(props) {
 		setIsLoading(true);
 		try {
 			const response = await axios.post(
-				'http://localhost:5000/api/places',
+				`${process.env.REACT_APP_SERVER_URI}/places`,
 				placeData,
 				{
 					headers: {

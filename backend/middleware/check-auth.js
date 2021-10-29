@@ -9,7 +9,7 @@ module.exports = (request, response, next) => {
 		if (!token) {
 			throw new Error('Authentication failed');
 		}
-		const decodeToken = jwt.verify(token, 'RANDOM_SECRET_TOKEN');
+		const decodeToken = jwt.verify(token, process.env.JWT_KEY);
 		request.userData = { userId: decodeToken.userId };
 		next();
 	} catch (err) {

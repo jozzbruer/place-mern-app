@@ -1,35 +1,71 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react';
 import {
 	BrowserRouter as Router,
 	Redirect,
 	Route,
 	Switch,
-} from 'react-router-dom'
-import './App.css'
-import NewPlace from './places/pages/NewPlace'
-import UpdatePlace from './places/pages/UpdatePlace'
-import UserPlaces from './places/pages/UserPlaces'
-import MainNavigation from './shared/components/Navigation/MainNavigation'
-import Authentication from './users/pages/Authentication'
-import { AuthContext } from './shared/context/auth-context'
+} from 'react-router-dom';
+import './App.css';
+import NewPlace from './places/pages/NewPlace';
+import UpdatePlace from './places/pages/UpdatePlace';
+import UserPlaces from './places/pages/UserPlaces';
+import MainNavigation from './shared/components/Navigation/MainNavigation';
+import Authentication from './users/pages/Authentication';
+import { AuthContext } from './shared/context/auth-context';
 
-import Users from './users/pages/Users'
+import Users from './users/pages/Users';
+
+let logoutTimer;
 
 function App() {
-	const [token, setToken] = useState()
-	const [userId, setUserId] = useState()
+	const [token, setToken] = useState();
+	const [userId, setUserId] = useState();
+	const [tokenExpirationDate, setTokenExpirationDate] = useState();
 
-	const login = useCallback((uid, token) => {
-		setToken(token)
-		setUserId(uid)
-	}, [])
+	const login = useCallback((uid, token, expirationDate) => {
+		setToken(token);
+		setUserId(uid);
+		const tokenExpiration =
+			expirationDate || new Date(new Date().getTime() + 1000 * 60 * 60);
+		setTokenExpirationDate(tokenExpiration);
+		localStorage.setItem(
+			'userData',
+			JSON.stringify({
+				userId: uid,
+				token: token,
+				expiration: tokenExpiration.toISOString(),
+			})
+		);
+	}, []);
 
 	const logout = useCallback(() => {
-		setToken(null)
-		setUserId(null)
-	}, [])
+		setToken(null);
+		setUserId(null);
+		setTokenExpirationDate(null);
+		localStorage.removeItem('userData');
+	}, []);
 
-	let routes
+	useEffect(() => {
+		if (token && tokenExpirationDate) {
+			const remainingTime =
+				tokenExpirationDate.getTime() - new Date().getTime();
+			logoutTimer = setTimeout(logout, remainingTime);
+		} else {
+			clearTimeout(logoutTimer);
+		}
+	}, [token, logout, tokenExpirationDate]);
+
+	useEffect(() => {
+		const storedData = JSON.parse(localStorage.getItem('userData'));
+		if (
+			storedData &&
+			storedData.token &&
+			new Date(storedData.expiration) > new Date()
+		)
+			login(storedData.userId, storedData.token);
+	}, [login]);
+
+	let routes;
 	if (token)
 		routes = (
 			<Switch>
@@ -47,7 +83,7 @@ function App() {
 				</Route>
 				<Redirect to='/' />
 			</Switch>
-		)
+		);
 	else
 		routes = (
 			<Switch>
@@ -62,7 +98,7 @@ function App() {
 				</Route>
 				<Redirect to='/auth' />
 			</Switch>
-		)
+		);
 
 	return (
 		<AuthContext.Provider
@@ -78,7 +114,7 @@ function App() {
 				<main>{routes}</main>
 			</Router>
 		</AuthContext.Provider>
-	)
+	);
 }
 
-export default App
+export default App;

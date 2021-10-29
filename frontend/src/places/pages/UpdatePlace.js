@@ -23,7 +23,7 @@ function UpdatePlace() {
 
 	useEffect(() => {
 		axios
-			.get(`http://localhost:5000/api/places/${placeId}`)
+			.get(`${process.env.REACT_APP_SERVER_URI}/places/${placeId}`)
 			.then((response) => {
 				if (response.statusText !== 'OK') {
 					throw new Error(response.message);
@@ -50,7 +50,7 @@ function UpdatePlace() {
 		event.preventDefault();
 		setIsLoading(true);
 		axios
-			.patch(`http://localhost:5000/api/places/${placeId}`, data, {
+			.patch(`${process.env.REACT_APP_SERVER_URI}/places/${placeId}`, data, {
 				headers: {
 					Authorization: 'Bearer ' + auth.token,
 				},
