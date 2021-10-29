@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import React, { Suspense, useCallback, useEffect, useState } from 'react';
 import {
 	BrowserRouter as Router,
 	Redirect,
@@ -6,14 +6,21 @@ import {
 	Switch,
 } from 'react-router-dom';
 import './App.css';
-import NewPlace from './places/pages/NewPlace';
-import UpdatePlace from './places/pages/UpdatePlace';
-import UserPlaces from './places/pages/UserPlaces';
+//import NewPlace from './places/pages/NewPlace';
+//import UpdatePlace from './places/pages/UpdatePlace';
+//import UserPlaces from './places/pages/UserPlaces';
 import MainNavigation from './shared/components/Navigation/MainNavigation';
-import Authentication from './users/pages/Authentication';
+import LoadingSpinner from './shared/components/UIelements/LoadingSpinner';
+//import Authentication from './users/pages/Authentication';
 import { AuthContext } from './shared/context/auth-context';
 
-import Users from './users/pages/Users';
+//import Users from './users/pages/Users';
+
+const Users = React.lazy(() => import('./users/pages/Users'));
+const NewPlace = React.lazy(() => import('./places/pages/NewPlace'));
+const UpdatePlace = React.lazy(() => import('./places/pages/UpdatePlace'));
+const UserPlaces = React.lazy(() => import('./places/pages/UserPlaces'));
+const Authentication = React.lazy(() => import('./users/pages/Authentication'));
 
 let logoutTimer;
 
@@ -111,7 +118,16 @@ function App() {
 			}}>
 			<Router>
 				<MainNavigation />
-				<main>{routes}</main>
+				<main>
+					<Suspense
+						fallback={
+							<div>
+								<LoadingSpinner asOverlay />
+							</div>
+						}>
+						{routes}
+					</Suspense>
+				</main>
 			</Router>
 		</AuthContext.Provider>
 	);
