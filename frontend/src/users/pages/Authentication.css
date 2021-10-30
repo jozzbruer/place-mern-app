@@ -1,16 +1,27 @@
 .authentication__header {
-    color: white;
-    text-align: center;
-  }
-  
-  .authentication {
-    background: white;
-    width: 90%;
-    max-width: 25rem;
-    margin: 7rem auto;
-    text-align: center;
-  }
-  
-  .authentication form {
-    margin-bottom: 1rem;
-  }
+	color: white;
+	text-align: center;
+}
+
+.authentication {
+	background: white;
+	width: 90%;
+	max-width: 25rem;
+	margin: 7rem auto;
+	text-align: center;
+}
+
+.authentication form {
+	margin-bottom: 1rem;
+}
+
+.place-form {
+	list-style: none;
+	margin: 0 auto;
+	padding: 1rem;
+	width: 90%;
+	max-width: 40rem;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+	border-radius: 6px;
+	background: white;
+}

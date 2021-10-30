@@ -9,7 +9,7 @@ const usersRoutes = require('./routes/users-routes');
 
 const HttpError = require('./models/http-error');
 
-require('dotenv').config();
+require('dotenv').config({ path: path.resolve(__dirname, '.env') });
 
 mongoose
 	.connect(
