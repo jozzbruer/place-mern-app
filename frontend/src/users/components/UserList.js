@@ -1,7 +1,7 @@
-import React from 'react'
-import Card from '../../shared/components/UIelements/Card'
-import UserItem from './UserItem'
-import './UserList.css'
+import React from 'react';
+import Card from '../../shared/components/UIelements/Card';
+import UserItem from './UserItem';
+import './UserList.css';
 
 function UserList(props) {
 	return (
@@ -21,12 +21,12 @@ function UserList(props) {
 								name={user.name}
 								placeCount={user.places.length}
 							/>
-						)
+						);
 					})}
 				</ul>
 			)}
 		</>
-	)
+	);
 }
 
-export default UserList
+export default UserList;
