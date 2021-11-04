@@ -9,11 +9,11 @@ const usersRoutes = require('./routes/users-routes');
 
 const HttpError = require('./models/http-error');
 
-require('dotenv').config({ path: path.resolve(__dirname, '.env') });
+require('dotenv').config();
 
 mongoose
 	.connect(
-		`mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@mern.aoodt.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`,
+		`mongodb+srv://${process.env.DB_USERNAME}:${process.env.BD_PASSWORD}@mern.aoodt.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`,
 		{
 			useNewUrlParser: true,
 			useUnifiedTopology: true,
