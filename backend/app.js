@@ -1,5 +1,4 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const fs = require('fs');
 const path = require('path');
@@ -12,11 +11,10 @@ const HttpError = require('./models/http-error');
 require('dotenv').config();
 
 mongoose
-	.connect(
-		`mongodb+srv://${process.env.DB_USERNAME}:${process.env.BD_PASSWORD}@mern.aoodt.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`
-	)
+	.connect('mongodb+srv://joz:bouzen3@mern.aoodt.mongodb.net/MernData?retryWrites=true&w=majority')
 	.then(() => console.log('Connection to MongoDB success'))
 	.catch(() => console.log('Connection Failed'));
+
 const app = express();
 
 app.use((request, response, next) => {
@@ -25,18 +23,12 @@ app.use((request, response, next) => {
 		'Access-Control-Allow-Headers',
 		'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization'
 	);
-	response.setHeader(
-		'Access-Control-Allow-Methods',
-		'GET, POST, PUT, DELETE, PATCH, OPTIONS'
-	);
+	response.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
 	next();
 });
-app.use(bodyParser.json());
+app.use(express.json());
 
-app.use(
-	'/uploads/images',
-	express.static(path.join(__dirname, '/uploads/images'))
-);
+app.use('/uploads/images', express.static(path.join(__dirname, '/uploads/images')));
 
 app.use('/api/places', placesRoutes);
 app.use('/api/users', usersRoutes);
@@ -55,8 +47,6 @@ app.use((error, request, response, next) => {
 	if (response.headerSent) {
 		return next(error);
 	}
-	response
-		.status(500)
-		.json({ Messages: error.message || 'An unknown error occured' });
+	response.status(500).json({ Messages: error.message || 'An unknown error occured' });
 });
 module.exports = app;

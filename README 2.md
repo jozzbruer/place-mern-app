@@ -1,1 +1,0 @@
-# place-mern-app
