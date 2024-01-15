@@ -11,7 +11,7 @@ const HttpError = require('./models/http-error');
 require('dotenv').config();
 
 mongoose
-	.connect('mongodb+srv://joz:bouzen3@mern.aoodt.mongodb.net/MernData?retryWrites=true&w=majority')
+	.connect(process.env.MONGO_URL)
 	.then(() => console.log('Connection to MongoDB success'))
 	.catch(() => console.log('Connection Failed'));
 
