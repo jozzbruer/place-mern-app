@@ -1,6 +1,7 @@
-const HttpError = require('../models/http-error');
-const jwt = require('jsonwebtoken');
-module.exports = (request, response, next) => {
+import jwt from 'jsonwebtoken';
+import HttpError from '../models/http-error.js';
+
+export const checkAuth = (request, response, next) => {
 	if (request.method === 'OPTIONS') {
 		return next();
 	}

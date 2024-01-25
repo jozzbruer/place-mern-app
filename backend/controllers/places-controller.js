@@ -1,14 +1,13 @@
-const { v4: uuidv4 } = require('uuid');
-const HttpError = require('../models/http-error');
-const validator = require('express-validator');
-const mongoose = require('mongoose');
-const fs = require('fs');
+import validator from 'express-validator';
+import mongoose from 'mongoose';
+import fs from 'fs';
 
-const getCoordsForAddress = require('../util/location');
-const Place = require('../models/Place');
-const User = require('../models/User');
+//const getCoordsForAddress = require('../util/location');
+import Place from '../models/Place.js';
+import User from '../models/User.js';
+import HttpError from '../models/http-error.js';
 
-exports.getAllPlaces = (request, response, next) => {
+export const getAllPlaces = (request, response, next) => {
 	Place.find()
 		.then((places) => response.status(200).json({ places }))
 		.catch((error) => {
@@ -16,31 +15,25 @@ exports.getAllPlaces = (request, response, next) => {
 			return next(error);
 		});
 };
-exports.getPlaceById = async (request, response, next) => {
+export const getPlaceById = async (request, response, next) => {
 	const placeId = request.params.pid;
 
 	let place;
 	try {
 		place = await Place.findById(placeId);
 	} catch (err) {
-		const error = new HttpError(
-			'Something went wrong, we could not find a place',
-			500
-		);
+		const error = new HttpError('Something went wrong, we could not find a place', 500);
 		return next(error);
 	}
 
 	if (!place) {
-		const error = new HttpError(
-			'Could not find a place for the provided ID',
-			404
-		);
+		const error = new HttpError('Could not find a place for the provided ID', 404);
 		return next(error);
 	}
 	response.json({ place });
 };
 
-exports.getPlacesByUserId = async (request, response, next) => {
+export const getPlacesByUserId = async (request, response, next) => {
 	const userId = request.params.uid;
 
 	let places;
@@ -48,30 +41,21 @@ exports.getPlacesByUserId = async (request, response, next) => {
 	try {
 		places = await Place.find({ creator: userId });
 	} catch (err) {
-		const error = new HttpError(
-			'Fetching places failed, please try aigain later.',
-			500
-		);
+		const error = new HttpError('Fetching places failed, please try aigain later.', 500);
 		return next(error);
 	}
 
 	if (!places) {
-		const error = new HttpError(
-			'Could not find a places for the provided user ID',
-			404
-		);
+		const error = new HttpError('Could not find a places for the provided user ID', 404);
 		return next(error);
 	}
 	response.json({ places });
 };
-exports.createPlace = async (request, response, next) => {
+export const createPlace = async (request, response, next) => {
 	const errors = validator.validationResult(request);
 
 	if (!errors.isEmpty()) {
-		const error = new HttpError(
-			'Invalid input passes, please check your data',
-			422
-		);
+		const error = new HttpError('Invalid input passes, please check your data', 422);
 		return next(error);
 	}
 	const { title, description, adress, creator } = request.body; // const title = request.body.title
@@ -117,15 +101,12 @@ exports.createPlace = async (request, response, next) => {
 	response.status(201).json({ place: createPlace });
 };
 
-exports.updatePlace = async (request, response, next) => {
+export const updatePlace = async (request, response, next) => {
 	const { title, description } = request.body; // const title = request.body.title
 	const errors = validator.validationResult(request);
 
 	if (!errors.isEmpty()) {
-		const error = new HttpError(
-			'Invalid input passes, please check your data',
-			422
-		);
+		const error = new HttpError('Invalid input passes, please check your data', 422);
 		return next(error);
 	}
 	const placeId = request.params.pid;
@@ -134,18 +115,12 @@ exports.updatePlace = async (request, response, next) => {
 	try {
 		place = await Place.findById(placeId);
 	} catch (error) {
-		error = new HttpError(
-			'Somthing went wrong, could not update the place.',
-			500
-		);
+		error = new HttpError('Somthing went wrong, could not update the place.', 500);
 		return next(error);
 	}
 
 	if (place.creator.toString() !== request.userData.userId) {
-		const error = new HttpError(
-			'Something went wrong, could not update the place.',
-			401
-		);
+		const error = new HttpError('Something went wrong, could not update the place.', 401);
 		return next(error);
 	}
 
@@ -162,7 +137,7 @@ exports.updatePlace = async (request, response, next) => {
 	response.status(201).json({ Message: 'Successfully Update' });
 };
 
-exports.deletePlace = async (request, response, next) => {
+export const deletePlace = async (request, response, next) => {
 	const placeId = request.params.pid;
 
 	let place;
@@ -170,10 +145,7 @@ exports.deletePlace = async (request, response, next) => {
 	try {
 		place = await Place.findById(placeId).populate('creator');
 	} catch (error) {
-		error = new HttpError(
-			'Something went wrong, could not delete the place',
-			500
-		);
+		error = new HttpError('Something went wrong, could not delete the place', 500);
 		return next(error);
 	}
 
@@ -183,10 +155,7 @@ exports.deletePlace = async (request, response, next) => {
 	}
 
 	if (place.creator.id !== request.userData.userId) {
-		const error = new HttpError(
-			'Something went wrong, could not update the place.',
-			401
-		);
+		const error = new HttpError('Something went wrong, could not update the place.', 401);
 		return next(error);
 	}
 
@@ -199,10 +168,7 @@ exports.deletePlace = async (request, response, next) => {
 		await place.creator.save({ session: sess });
 		await sess.commitTransaction();
 	} catch (error) {
-		error = new HttpError(
-			'Something went wrong, could not delete the place',
-			500
-		);
+		error = new HttpError('Something went wrong, could not delete the place', 500);
 		return next(error);
 	}
 	fs.unlink(imagePath, (error) => {

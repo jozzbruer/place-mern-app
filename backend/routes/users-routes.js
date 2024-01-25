@@ -1,13 +1,12 @@
-const express = require('express')
-const validator = require('express-validator')
-const fileUpload = require('../middleware/file-upload')
+import express from 'express';
+import validator from 'express-validator';
+import fileUpload from '../middleware/file-upload.js';
+import { getAllUsers, login, signUp } from '../controllers/users-controller.js';
 
-const router = express.Router()
+const usersRoutes = express.Router();
 
-const usersCtrl = require('../controllers/users-controller')
-
-router.get('/', usersCtrl.getAllUsers)
-router.post(
+usersRoutes.get('/', getAllUsers);
+usersRoutes.post(
 	'/signup',
 	fileUpload.single('image'),
 	[
@@ -15,8 +14,8 @@ router.post(
 		validator.check('email').isEmail(),
 		validator.check('password').isLength({ min: 6 }),
 	],
-	usersCtrl.signUp
-)
-router.post('/login', usersCtrl.login)
+	signUp
+);
+usersRoutes.post('/login', login);
 
-module.exports = router
+export default usersRoutes;

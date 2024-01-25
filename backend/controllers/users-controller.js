@@ -1,12 +1,11 @@
-const { v4: uuidv4 } = require('uuid');
-const HttpError = require('../models/http-error');
-const validator = require('express-validator');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+import validator from 'express-validator';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
-const User = require('../models/User');
+import User from '../models/User.js';
+import HttpError from '../models/http-error.js';
 
-exports.getAllUsers = async (request, response, next) => {
+export const getAllUsers = async (request, response, next) => {
 	let users;
 	try {
 		users = await User.find({}, '-password');
@@ -17,7 +16,7 @@ exports.getAllUsers = async (request, response, next) => {
 	response.status(200).json({ users });
 };
 
-exports.signUp = (request, response, next) => {
+export const signUp = (request, response, next) => {
 	const errors = validator.validationResult(request);
 
 	if (!errors.isEmpty()) {
@@ -71,7 +70,7 @@ exports.signUp = (request, response, next) => {
 		});
 };
 
-exports.login = async (request, response, next) => {
+export const login = async (request, response, next) => {
 	const { email, password } = request.body;
 	let existingUser;
 

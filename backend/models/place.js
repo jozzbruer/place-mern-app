@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const placeSchema = mongoose.Schema({
 	title: { type: String, required: true },
@@ -12,4 +12,6 @@ const placeSchema = mongoose.Schema({
 	creator: { type: mongoose.Types.ObjectId, required: true, ref: 'User' }, // A place belongs to   1-1 user
 });
 
-module.exports = mongoose.model('Place', placeSchema);
+const Place = mongoose.model('Place', placeSchema);
+
+export default Place;

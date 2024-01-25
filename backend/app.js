@@ -1,14 +1,13 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const fs = require('fs');
-const path = require('path');
+import express from 'express';
+import mongoose from 'mongoose';
+import fs from 'fs';
+import { join } from 'path';
+import placesRoutes from './routes/places-routes.js';
+import HttpError from './models/http-error.js';
+import * as dotenv from 'dotenv';
+import usersRoutes from './routes/users-routes.js';
 
-const placesRoutes = require('./routes/places-routes');
-const usersRoutes = require('./routes/users-routes');
-
-const HttpError = require('./models/http-error');
-
-require('dotenv').config();
+dotenv.config();
 
 mongoose
 	.connect(process.env.MONGO_URL)
@@ -28,7 +27,8 @@ app.use((request, response, next) => {
 });
 app.use(express.json());
 
-app.use('/uploads/images', express.static(path.join(__dirname, '/uploads/images')));
+// app.use('/uploads/images', express.static(path.join(__dirname, '/uploads/images')));
+app.use('/uploads/images', express.static(join('uploads', 'images')));
 
 app.use('/api/places', placesRoutes);
 app.use('/api/users', usersRoutes);
@@ -49,4 +49,4 @@ app.use((error, request, response, next) => {
 	}
 	response.status(500).json({ Messages: error.message || 'An unknown error occured' });
 });
-module.exports = app;
+export default app;

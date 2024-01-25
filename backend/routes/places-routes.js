@@ -1,22 +1,28 @@
-const express = require('express');
-const validator = require('express-validator');
-const fileUpload = require('../middleware/file-upload');
+import express from 'express';
+import validator from 'express-validator';
+import fileUpload from '../middleware/file-upload.js';
 
-const checkAuth = require('../middleware/check-auth');
+import { checkAuth } from '../middleware/check-auth.js';
+import {
+	createPlace,
+	deletePlace,
+	getAllPlaces,
+	getPlaceById,
+	getPlacesByUserId,
+	updatePlace,
+} from '../controllers/places-controller.js';
 
-const router = express.Router();
+const placesRoutes = express.Router();
 
-const placesCtrl = require('../controllers/places-controller');
+placesRoutes.get('/', getAllPlaces);
 
-router.get('/', placesCtrl.getAllPlaces);
+placesRoutes.get('/:pid', getPlaceById);
 
-router.get('/:pid', placesCtrl.getPlaceById);
+placesRoutes.get('/users/:uid', getPlacesByUserId);
 
-router.get('/users/:uid', placesCtrl.getPlacesByUserId);
+placesRoutes.use(checkAuth);
 
-router.use(checkAuth);
-
-router.post(
+placesRoutes.post(
 	'/',
 	fileUpload.single('image'),
 	[
@@ -24,18 +30,15 @@ router.post(
 		validator.check('description').isLength({ min: 5 }),
 		validator.check('adress').notEmpty(),
 	],
-	placesCtrl.createPlace
+	createPlace
 );
 
-router.patch(
+placesRoutes.patch(
 	'/:pid',
-	[
-		validator.check('title').not().isEmpty(),
-		validator.check('description').isLength({ min: 5 }),
-	],
-	placesCtrl.updatePlace
+	[validator.check('title').not().isEmpty(), validator.check('description').isLength({ min: 5 })],
+	updatePlace
 );
 
-router.delete('/:pid', placesCtrl.deletePlace);
+placesRoutes.delete('/:pid', deletePlace);
 
-module.exports = router;
+export default placesRoutes;
