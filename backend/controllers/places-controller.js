@@ -3,8 +3,8 @@ import mongoose from 'mongoose';
 import fs from 'fs';
 
 //const getCoordsForAddress = require('../util/location');
-import Place from '../models/Place.js';
-import User from '../models/User.js';
+import Place from '../models/place.js';
+import User from '../models/user.js';
 import HttpError from '../models/http-error.js';
 
 export const getAllPlaces = (request, response, next) => {

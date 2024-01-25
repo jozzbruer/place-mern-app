@@ -2,7 +2,7 @@ import validator from 'express-validator';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-import User from '../models/User.js';
+import User from '../models/user.js';
 import HttpError from '../models/http-error.js';
 
 export const getAllUsers = async (request, response, next) => {
