@@ -115,6 +115,10 @@ mern-image-sharing/
 - **Authentication**:
   - JSON Web Tokens (JWT)
   - Bcrypt for password hashing
+  
+![Screenshot 2024-01-14 at 10 04 02 PM](https://github.com/jozzbruer/place-mern-app/assets/21253158/c639bb11-cb21-4e68-99e2-44d48697c2f8)
+![Screenshot 2024-01-14 at 10 00 53 PM](https://github.com/jozzbruer/place-mern-app/assets/21253158/ed62122d-63ee-4ffa-9d64-68f971daa1eb)
+
 
 ## Contributing
 
